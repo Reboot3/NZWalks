@@ -9,9 +9,10 @@ namespace NZWalks.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    [Authorize]
+    
     public class RegionsController : Controller
     {
+       
         private readonly IRegionRepository regionRepository;
         private readonly IMapper mapper;
 
@@ -24,6 +25,7 @@ namespace NZWalks.API.Controllers
 
 
         [HttpGet]
+        [Authorize(Roles = "reader")]
         public async Task<IActionResult> GetAllRegionsAsync()
         {
             var regions = await regionRepository.GetAllAsync();
@@ -36,6 +38,7 @@ namespace NZWalks.API.Controllers
         [HttpGet]
         [Route("{id:guid}")]
         [ActionName("GetRegionAsync")]
+        [Authorize(Roles = "reader")]
         public async Task<IActionResult> GetRegionAsync(Guid id)
         {
             var region = await regionRepository.GetAsync(id);
@@ -50,6 +53,8 @@ namespace NZWalks.API.Controllers
 
 
         [HttpPost]
+        [Authorize]
+        [Authorize(Roles = "writer")]
         public async Task<IActionResult> AddRegionAsync(Models.DTO.AddRegionRequest addRegionRequest)
         {
             // Validate The Request
@@ -91,6 +96,7 @@ namespace NZWalks.API.Controllers
 
         [HttpDelete]
         [Route("{id:guid}")]
+        [Authorize(Roles = "writer")]
         public async Task<IActionResult> DeleteRegionAsync(Guid id)
         {
             // Get region from DB
@@ -121,6 +127,7 @@ namespace NZWalks.API.Controllers
 
         [HttpPut]
         [Route("{id:guid}")]
+        [Authorize(Roles = "writer")]
         public async Task<IActionResult> UpdateRegionAsync(
             [FromRoute] Guid id, [FromBody] Models.DTO.UpdateRegionRequest updateRegionRequest)
 
@@ -128,7 +135,7 @@ namespace NZWalks.API.Controllers
             // Validate the incoming request
             //if (!UpdateRegionAsync(updateRegionRequest))
             //{
-            //    return BadRequest(ModelState);
+            //   return BadRequest(ModelState);
             //}
 
             // Convert DTO to Domain model
